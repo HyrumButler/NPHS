@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout</title>
+</head>
+<body>
+<header>
+    <h1>Checkout</h1>
+</header>
+<div class="container">
+    <h2>Review Your Cart Items</h2>
+    <div id="cartItems"></div>
+    <h2>Shipping Information</h2>
+    <!-- Shipping information form -->
+    <form id="shippingForm">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required>
+        <!-- Add more shipping fields as needed -->
+
+        <button type="submit">Proceed to Payment</button>
+    </form>
+</div>
+
+<script>
+    // Function to render cart items
+    function renderCart() {
+        const cartItemsContainer = document.getElementById('cartItems');
+        cartItemsContainer.innerHTML = '';
+
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        cartItems.forEach((item) => {
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product');
+            productDiv.innerHTML = `
+                <p>${item.name} - $${item.price.toFixed(2)}</p>
+                <p>Color: ${item.color}</p>
+                <img src="${item.image}" alt="${item.name}">
+            `;
+            cartItemsContainer.appendChild(productDiv);
+        });
+    }
+
+    // Event listener for shipping form submission
+    document.getElementById('shippingForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Handle shipping information and proceed to payment
+        alert('Proceeding to payment...');
+        // Redirect to payment page or implement payment processing logic
+        window.location.href = 'payment.html';
+    });
+
+    // Initial rendering of cart items
+    renderCart();
+</script>
+</body>
+</html>

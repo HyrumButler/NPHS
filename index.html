@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Website</title>
+<style>
+    /* Basic styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+    }
+    .product {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .product img {
+        max-width: 100px;
+        max-height: 100px;
+    }
+    .admin-actions {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .admin-actions input[type="text"],
+    .admin-actions input[type="number"] {
+        margin-right: 10px;
+        padding: 5px;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Business Website</h1>
+</header>
+<div class="container">
+    <div class="admin-actions">
+        <input type="text" id="productName" placeholder="Product Name">
+        <input type="number" id="productPrice" placeholder="Product Price">
+        <input type="text" id="productImage" placeholder="Image URL">
+        <button onclick="addProduct()">Add Product</button>
+    </div>
+    <button><a href="cart.html">cart</a></button>
+    <div id="products"></div>
+</div>
+
+<script>
+    // Function to render products
+    function renderProducts() {
+        const productsContainer = document.getElementById('products');
+        productsContainer.innerHTML = '';
+
+        // Retrieve products from localStorage
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+
+        products.forEach((product, index) => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product');
+            productElement.innerHTML = `
+                <p>${product.name} - $${product.price.toFixed(2)}</p>
+                <img src="${product.image}" alt="${product.name}">
+                <select onchange="updateProductColor(${index}, this)">
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                    <option value="yellow">Yellow</option>
+                </select>
+                <button onclick="addToCart(${index})">Add to Cart</button>
+            `;
+            productsContainer.appendChild(productElement);
+        });
+    }
+
+    // Function to add product
+    function addProduct() {
+        const productName = document.getElementById('productName').value;
+        const productPrice = parseFloat(document.getElementById('productPrice').value);
+        const productImage = document.getElementById('productImage').value;
+
+        if (productName && productPrice && productImage) {
+            const newProduct = {
+                name: productName,
+                price: productPrice,
+                image: productImage,
+                color: 'red' // Default color
+            };
+
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products.push(newProduct);
+            localStorage.setItem('products', JSON.stringify(products));
+
+            renderProducts();
+
+            // Clear input fields after adding product
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productImage').value = '';
+        } else {
+            alert('Please fill in all fields.');
+        }
+    }
+
+    // Function to add product to cart
+    function addToCart(index) {
+        const product = JSON.parse(localStorage.getItem('products'))[index];
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        cartItems.push(product);
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+
+    // Function to update product color
+    function updateProductColor(index, selectElement) {
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        products[index].color = selectElement.value;
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    // Initial rendering of products
+    renderProducts();
+</script>
+</body>
+</html>
